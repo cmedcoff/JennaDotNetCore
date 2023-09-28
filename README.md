@@ -2,7 +2,7 @@
 
 ## A software "scratch pad" for tutoring one of my DotNet students.
 
-### Planning (9/31/2023)
+### Planning (8/31/2023)
 
 <summary>We put together an outline to list potential areas within DotNet to get started on.
 The decision was to focus on .NET 6 and 7, Console Apps and IOC, Configuration and Logging in 
@@ -62,7 +62,7 @@ The outline is here below:</summary>
 
 </details>
 
-### 9/31/2023 
+### 8/31/2023 
 
 <summary>
 
@@ -84,6 +84,45 @@ use "top level statments" versus the traditional "static main" approach.
 - See the ConsoleAppDip1 project
 - see https://blog.ploeh.dk/2014/06/10/pure-di/
 	- I highly recommend this guys's book on DI
+
+</details>
+
+### 9/7/2023 
+
+<summary>
+
+- We continue our investigation of "IOC" Inversion of Control Containers.
+
+</summery>
+<details>
+- We reviewed Jenna's investigation/coding of interfaces and concrete classes
+- We (accidently) ran into the use case of having more than one implementation of an 
+- interface
+</details>
+
+### 9/14/2023 
+
+<summary>
+
+- We continue our investigation of "IOC" Inversion of Control Containers.
+- We take on the use case of having more than one implementation of an interface
+- We take a look at writing our own rudementary ioc container to gain some insight into
+how a full fledged ioc container works it's "magic"
+
+
+</summery>
+<details>
+
+- See Session3 consoleFromWorker1 as we continue to modify it from Session2.  We also use
+app as a segeway into .NET (Core) configuration which is very different and more complex, but
+more flexible than .NET Full Framework's app.config and web.config files.
+
+- we'll debug our way through See Session3\IocExample console app in order to debug our own
+IOC Container which uses .NET Reflection as is pretty much how any IOC Container is 
+implemented.
+
+	- No support for concrete class registration or resolution
+	- No support for different lifetimes
 
 </details>
 

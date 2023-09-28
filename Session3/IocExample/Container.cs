@@ -35,7 +35,7 @@ public class Container
 
     private object Resolve(Type type)
     {
-        Type resolvedType = null;
+        Type resolvedType;
         try
         {
             resolvedType = _map[type];

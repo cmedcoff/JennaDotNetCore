@@ -1,19 +1,19 @@
-{
+﻿{
   "profiles": {
     "args_email": {
       "commandName": "Project",
-      "commandLineArgs": "--email=true",
+      "commandLineArgs": "/email true",
+      "dotnetRunMessages": true,
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
-      },
-      "dotnetRunMessages": true
+      }
     },
     "args_no_email": {
       "commandName": "Project",
+      "dotnetRunMessages": true,
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
-      },
-      "dotnetRunMessages": true
+      }
     }
   }
 }
