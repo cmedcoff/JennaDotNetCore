@@ -78,7 +78,7 @@ a console app using the "dotnet" command and looked the code and the option to u
 use "top level statments" versus the traditional "static main" approach.
 
 
-</summery>
+</summary>
 <details>
 
 - See the ConsoleAppDip1 project
@@ -93,7 +93,7 @@ use "top level statments" versus the traditional "static main" approach.
 
 - We continue our investigation of "IOC" Inversion of Control Containers.
 
-</summery>
+</summary>
 <details>
 - We reviewed Jenna's investigation/coding of interfaces and concrete classes
 - We (accidently) ran into the use case of having more than one implementation of an 
@@ -110,7 +110,7 @@ use "top level statments" versus the traditional "static main" approach.
 how a full fledged ioc container works it's "magic"
 
 
-</summery>
+</summary>
 <details>
 
 - See Session3 consoleFromWorker1 as we continue to modify it from Session2.  We also use
@@ -126,3 +126,23 @@ implemented.
 
 </details>
 
+### 9/21/2023
+<summary>
+- Session was cancelled
+</summary>
+
+### 9/28/2023
+<summary>
+
+- Quick review of Session 3 with regards to IOptions of T
+- Overview/Examples of ILogger and ILogger of T
+
+</summary>
+<details>
+
+- IOptions Pattern see https://learn.microsoft.com/en-us/dotnet/core/extensions/options
+- Logging see https://learn.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-7.0
+- debates and trade-offs of .NET (Core) Logging see
+https://stackoverflow.com/questions/51345161/should-i-take-ilogger-iloggert-iloggerfactory-or-iloggerprovider-for-a-libra
+
+</details>
