@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoggingConsoleApp1", "LoggingConsoleApp1\LoggingConsoleApp1.csproj", "{C6FE1A76-CCE9-4C81-82B5-92DD17F0568B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoggingConsole2FromWorkerServiceTemplate", "LoggingConsole2FromWorkerServiceTemplate\LoggingConsole2FromWorkerServiceTemplate.csproj", "{DC5EA872-8711-4E81-8E7C-6B9859B80E4D}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "CrossDotNetPlatformatBizLogic", "CrossDotNetPlatformatBizLogic\CrossDotNetPlatformatBizLogic\CrossDotNetPlatformatBizLogic.shproj", "{148459E5-A1DD-4F94-9C3D-93561B5285FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FullFrameworkConsoleApplication1", "FullFrameworkConsoleApplication1\FullFrameworkConsoleApplication1.csproj", "{F54589D1-1CBC-4BE8-9EA6-51CEF88FD19E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C6FE1A76-CCE9-4C81-82B5-92DD17F0568B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6FE1A76-CCE9-4C81-82B5-92DD17F0568B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6FE1A76-CCE9-4C81-82B5-92DD17F0568B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6FE1A76-CCE9-4C81-82B5-92DD17F0568B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC5EA872-8711-4E81-8E7C-6B9859B80E4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC5EA872-8711-4E81-8E7C-6B9859B80E4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC5EA872-8711-4E81-8E7C-6B9859B80E4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC5EA872-8711-4E81-8E7C-6B9859B80E4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F54589D1-1CBC-4BE8-9EA6-51CEF88FD19E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F54589D1-1CBC-4BE8-9EA6-51CEF88FD19E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F54589D1-1CBC-4BE8-9EA6-51CEF88FD19E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F54589D1-1CBC-4BE8-9EA6-51CEF88FD19E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		CrossDotNetPlatformatBizLogic\CrossDotNetPlatformatBizLogic\CrossDotNetPlatformatBizLogic.projitems*{148459e5-a1dd-4f94-9c3d-93561b5285fd}*SharedItemsImports = 13
+		CrossDotNetPlatformatBizLogic\CrossDotNetPlatformatBizLogic\CrossDotNetPlatformatBizLogic.projitems*{dc5ea872-8711-4e81-8e7c-6b9859b80e4d}*SharedItemsImports = 5
+		CrossDotNetPlatformatBizLogic\CrossDotNetPlatformatBizLogic\CrossDotNetPlatformatBizLogic.projitems*{f54589d1-1cbc-4be8-9ea6-51cef88fd19e}*SharedItemsImports = 4
+	EndGlobalSection
+EndGlobal

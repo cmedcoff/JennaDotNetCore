@@ -1,0 +1,11 @@
+﻿{
+  "profiles": {
+    "LoggingConsole2FromWorkerServiceTemplate": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
