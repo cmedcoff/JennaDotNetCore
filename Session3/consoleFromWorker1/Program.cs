@@ -13,9 +13,9 @@ IHost host = Host.CreateDefaultBuilder(args)
 
 		 configurationBuilder.Build();
 	 })
-	.ConfigureServices((hostBuilder, services) =>
+	.ConfigureServices((HostBuilderContext hostBuilder, IServiceCollection serviceCollection) =>
 	{
-		services.AddSingleton<MessageSender>();
+		serviceCollection.AddSingleton<MessageSender>();
 
 		// command line driven provider (not configuration driven)
 		// e.g. "email"
@@ -27,11 +27,15 @@ IHost host = Host.CreateDefaultBuilder(args)
 
 		// configuration driven driven provider, configuration source
 		// command line or appsettings{env}.json
-		services.AddTransient<IMessageProvider>((ioc) =>
-			bool.Parse(hostBuilder.Configuration["email"] ?? "false")
-			? new EmailProvider() : new SmsProvider());
+		//serviceCollection.AddTransient<IMessageProvider>((ioc) =>
+		//	bool.Parse(hostBuilder.Configuration["email"] ?? "false")
+		//	? new EmailProvider() : new SmsProvider());
 
-		//services.Configure<MessageOptions>(hostBuilder.Configuration.GetSection("Message"));
+		serviceCollection
+			.Configure<MessageConfig>(hostBuilder.Configuration
+			.GetSection(nameof(MessageConfig)));
+
+		serviceCollection.AddSingleton<IMessageProvider, EmailProvider>();
 
 	})
     .Build();
@@ -40,3 +44,4 @@ IHost host = Host.CreateDefaultBuilder(args)
 
 var doIt = host.Services.GetRequiredService<MessageSender>();
 doIt.Execute();
+

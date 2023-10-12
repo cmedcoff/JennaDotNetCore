@@ -2,26 +2,28 @@ using LoggingConsole2FromWorkerServiceTemplate;
 
 IHost host = Host.CreateDefaultBuilder(args)
     //.ConfigureServices(services => { services.AddHostedService<Worker>(); })
-    .ConfigureLogging((hostBuilderContext, loggingBuilder) =>
+    .ConfigureLogging((HostBuilderContext hostBuilderContext, ILoggingBuilder loggingBuilder) =>
     {
         loggingBuilder.ClearProviders();
         loggingBuilder.AddDebug();
+        loggingBuilder.AddConsole();
     })
     .ConfigureServices(hostbuilder =>
     {
         hostbuilder.AddTransient<NeedsGenericLogger>();
-        
+
         // hack to get a non-generic logger
         // there seems to be debate about using a non-generic
         // lots of points of views can be found at this thread
-        https://stackoverflow.com/questions/51345161/should-i-take-ilogger-iloggert-iloggerfactory-or-iloggerprovider-for-a-libra
+        // https://stackoverflow.com/questions/51345161/should-i-take-ilogger-iloggert-iloggerfactory-or-iloggerprovider-for-a-libra
+
         hostbuilder.AddSingleton<ILogger>(serviceProvider
             => serviceProvider
                 .GetRequiredService<ILoggerFactory>()
-                .CreateLogger(""));
-        
+                .CreateLogger("MyLibrary"));
+
         hostbuilder.AddTransient<NeedsLogging>();
-        
+
         /*
          * I feel that both IOptions<T> and ILogger<T> are somewhat 'leaky abstractions'
          * ( google search 'leaky abstraction' )
@@ -35,7 +37,7 @@ IHost host = Host.CreateDefaultBuilder(args)
          * In either case there is another way to avoid the possibly undesired coupling
          * to these interfaces (if you want code that works across both full framework and code)
          * by using the standard "Adapter Pattern".  E.g Define your own configuration and logging
-         * interfaces and hide the details of .NET Core IOptions<T> and ILoggger inside
+         * interfaces and hide the details of .NET Core IOptions<T> and ILoggger<T> inside
          * the .NET Core implementation and delegate to those objects.
          *
          * This is what we do in our own applications to decouple 3rd party Nuget packages

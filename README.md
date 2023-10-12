@@ -146,3 +146,21 @@ implemented.
 https://stackoverflow.com/questions/51345161/should-i-take-ilogger-iloggert-iloggerfactory-or-iloggerprovider-for-a-libra
 
 </details>
+
+### 10/05/2023
+<summary>
+
+- Quick review of Session 4 
+- Examples of how to decouple Core Framework logging specific types
+by using the Gof Adapter pattern - e.g. hide behind your own logger
+interface and delegate to ctor inject types of the Core Framework
+specfic types.  This allows to share code between full and core framework.
+The same technique could be used for configuration.
+
+</summary>
+
+<details>
+- Lots of articles books on Gof Patterns, here's one on Adapter
+https://www.gofpattern.com/structural/patterns/adapter-pattern.php
+
+</details>
