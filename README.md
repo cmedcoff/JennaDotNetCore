@@ -147,9 +147,8 @@ https://stackoverflow.com/questions/51345161/should-i-take-ilogger-iloggert-ilog
 
 </details>
 
-### 10/05/2023
+### 10/05/2023 - Session 5
 <summary>
-
 - Quick review of Session 4 
 - Examples of how to decouple Core Framework logging specific types
 by using the Gof Adapter pattern - e.g. hide behind your own logger
@@ -162,5 +161,76 @@ The same technique could be used for configuration.
 <details>
 - Lots of articles books on Gof Patterns, here's one on Adapter
 https://www.gofpattern.com/structural/patterns/adapter-pattern.php
+
+</details>
+
+### 10/12/2023 - Session 6
+<summary>
+- Session 6
+	- Introduction to MVC and Razor Pages
+	- Pointing similarities and differences
+	- Short review of the history of web page (generation) technology
+		- Static
+		- Templates with placeholders CGI/Scripting
+		- Evolution to threads, compiled languages
+		- AJAX
+		- SPA's
+<details>
+
+	- https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller
+
+	View Discovery
+	- https://learn.microsoft.com/en-us/aspnet/core/mvc/views/overview?view=aspnetcore-6.0
+	- https://github.com/dotnet/AspNetCore.Docs/blob/main/aspnetcore/mvc/views/overview.md
+	Resources
+	- Andrew Lock ASP.NET Core In Action
+
+		- 1st Edition focuss on Controllers (ASP.NET Core 2?)
+		- 2nd Edition focuses on Razor Pages (ASP.NET Core 5)
+		- 3rd Edition focuses on Razor Pages (ASP.NET Core 7)
+		- Blog - https://andrewlock.net/
+
+	- Mike Brind
+		- ASP.NET Razor Pages in Action
+		- https://www.learnrazorpages.com
+
+	-- API Technology History
+
+
+1) Static Web Sites - Static Web Pages server from files on disk and returns it to browser
+
+2) Dyanmic Web sites - templates with data placeolders filled in with a scripting language - Pearl, PHP, Python, VBScript/Javasript, etc.  Typcially OS Process per request driven.
+
+	TimeTrackerWebMvc is using this, but rather than a scripting language untyped, slow, it using a statically typed, 	fast language C#.
+
+	Thread per request driven.
+
+3) AJAX - Dynamic Web sites, but with partial page updates from the browser side.
+JavaScript would make a call to some server to get new/update data XML. (early 1990's)
+
+4) SPA's  - most or all HTML generated in browser using Javascript including REST API calls to a server.
+The REST API calls return JSON
+
+	Angular, React, Vue, and others.
+
+
+the big differnece between 2 & 3 is the use of an API.  
+
+in the beginning of API's
+
+	POX - Plain Old XML - HTTP form post to call the API, and the API returns XML.
+
+	SOAP - Simple Object ? Protocol - eventually turned into something very, very complecated.
+
+		The downfall of SOAP it use complex XML.
+
+	Something happened, a new way to browse and use the Internet came along and it was weak in supporting XML, but good at supporting Javascript. - What was this?  The cell phone with a browser.
+
+	this drove a change in API's from XML to JSON and REST.
+
+
+
+
+
 
 </details>
