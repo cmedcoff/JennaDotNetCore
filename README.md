@@ -220,7 +220,7 @@ in the beginning of API's
 
 	POX - Plain Old XML - HTTP form post to call the API, and the API returns XML.
 
-	SOAP - Simple Object ? Protocol - eventually turned into something very, very complecated.
+	SOAP - Simple Object Access Protocol - eventually turned into something very, very complecated.
 
 		The downfall of SOAP it use complex XML.
 
@@ -228,9 +228,6 @@ in the beginning of API's
 
 	this drove a change in API's from XML to JSON and REST.
 
-
-
-
-
+	REST/JSON - 
 
 </details>

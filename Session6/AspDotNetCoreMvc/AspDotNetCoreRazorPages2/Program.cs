@@ -1,23 +1,10 @@
-﻿using AspDotNetCoreRazorPages.Data;
-
-using Microsoft.EntityFrameworkCore;
-
-
-namespace AspDotNetCoreRazorPages
+namespace AspDotNetCoreRazorPages2
 {
     public class Program
     {
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            // new ...
-            builder.Services.AddDbContext<CarDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("CarDbContext") ?? throw new InvalidOperationException("Connection string 'CarDbContext' not found.")));
-
-            builder.Services.AddTransient<ICarData, CarData>();
-
-            // ... end new
 
             // Add services to the container.
             builder.Services.AddRazorPages();
