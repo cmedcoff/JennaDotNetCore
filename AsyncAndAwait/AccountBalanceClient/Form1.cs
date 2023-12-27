@@ -24,22 +24,22 @@ namespace AccountBalanceClient
         /*
          * Discuss 
          * avoid asyc void except for event handlers
-         * asyc Task for "void-ish" async methods
-         * asycn Task<T> for async methods that return a value
+         * async Task for "void-ish" async methods
+         * async Task<T> for async methods that return a value
          */
         private async void timer1_Tick(object sender, EventArgs e)
         {
-            UpdateLabelWithCurrentTime();
-            //GetAccountBalanceSynchronously();
+            // UpdateLabelWithCurrentTime();
+            // GetAccountBalanceSynchronously();
             // GetAccountBalanceAsyncTaskParallelLibrary();
             // await GetAccountBalanceAsyncAwait();
-            //await GetMultipleAccountBalancesAsyncAwait();
+            await GetMultipleAccountBalancesAsyncAwait();
 
             /*
-             *  don't forget to offer the option of going down down the async rabblit hold
+             *  don't forget to offer the option of going down down the async rabbit hole
              *  by discussing what the compiler actually generates, e.g. are threads used, etc.
              *  
-             *  Also remember when using TPS to do thing ain parallel, race conditions can occur
+             *  Also remember when using TPS to do things in parallel, race conditions can occur
              *  and have to be dealt with the same way as when using threads directly
              *  
              *  The following blog post is a good resource for understanding async/await 
@@ -54,6 +54,18 @@ namespace AccountBalanceClient
              *  threading aspects are covered in the book "Async in C# 5.0" by Alex Davies
              
              *  https://learning.oreilly.com/library/view/async-in-c/9781449337155/
+             *  
+             *  Microsoft has other async patterns that existed before async/await:
+             *  
+             *  See https://learn.microsoft.com/en-us/dotnet/standard/asynchronous-programming-patterns/
+             *  
+             *  I owe you an update to this to demonstrate using threading
+             *  
+             *  Pluralsight courses on async/await
+             *  
+             *  https://app.pluralsight.com/library/courses/intro-async-parallel-dotnet4/table-of-contents
+             *  https://app.pluralsight.com/library/courses/getting-started-with-asynchronous-programming-dotnet/table-of-contents
+             *  https://app.pluralsight.com/library/courses/c-sharp-10-asynchronous-programming/table-of-contents
              *  
              */
         }
@@ -74,7 +86,7 @@ namespace AccountBalanceClient
             ToggleAccountNumber();
             var request = new RestRequest("balance")
                 .AddParameter("accountNumber", accountNumber, ParameterType.QueryString);
-            var response = client.Execute<AccountBalance>(request);
+            RestResponse<AccountBalance> response = client.Execute<AccountBalance>(request);
             label1.Text = response.Data?.Balance.ToString(CultureInfo.InvariantCulture);
         }
 
@@ -106,7 +118,7 @@ namespace AccountBalanceClient
                 Task.Run(() => client.Execute<AccountBalance>(request));
             // setup continuation to run when task completes
             task.ContinueWith(previousTask =>
-                label1.Text = previousTask.Result.Data?.Balance.ToString(CultureInfo.InvariantCulture),
+                label1.Text = MyContinuation(previousTask),
                 // a bunch other other optional parameters need here
                 // to ensure that the continuation runs on the UI thread,
                 // the only place we can make UI updates,
@@ -115,6 +127,11 @@ namespace AccountBalanceClient
                 TaskContinuationOptions.None,
                 TaskScheduler.FromCurrentSynchronizationContext()
                 );
+        }
+
+        private static string? MyContinuation(Task<RestResponse<AccountBalance>> previousTask)
+        {
+            return previousTask.Result.Data?.Balance.ToString(CultureInfo.InvariantCulture);
         }
 
         private async Task GetAccountBalanceAsyncAwait()
@@ -135,7 +152,6 @@ namespace AccountBalanceClient
             catch (Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
-                throw;
             }
         }
 
@@ -146,7 +162,7 @@ namespace AccountBalanceClient
             var accountNumbers = new[] { "1005", "1006", "1007" }; // could be dozens, hundreds from db, etc.
             var client = new RestClient(new RestClientOptions("https://localhost:7086"));
 
-            //// one after another, inefficient
+            // one after another, inefficient
             //foreach (var accountNumber in accountNumbers)
             //{
             //    var request = new RestRequest("balance")
@@ -186,8 +202,6 @@ namespace AccountBalanceClient
             // start all the tasks
             tasks.ForEach(x => x.Start());
 
-
-
             // continue as long as our collection still has tasks
             while (tasks.Any())
             {
@@ -204,20 +218,20 @@ namespace AccountBalanceClient
                     // multiple exceptions.  Catching only by Exception will work but you'll lose
                     // the details of the exception or exceptions
 
-                    //if(!completedTask.IsFaulted)
-                    //{
-                    // accessing the "Result" property "observes" the exception
-                    label1.Text += $"\n\n{completedTask.Result.Data?.Balance.ToString(CultureInfo.InvariantCulture)}";
-                    //}
-                    //else
-                    //{
-                    //    // handle exception
-                    //    if (completedTask.Exception is AggregateException x)
-                    //        x.InnerExceptions.ToList().ForEach(x =>
-                    //        {
-                    //            Console.WriteLine(x.Message);
-                    //        });
-                    //}
+                    if (!completedTask.IsFaulted)
+                    {
+                        // accessing the "Result" property "observes" the exception
+                        label1.Text += $"\n\n{completedTask.Result.Data?.Balance.ToString(CultureInfo.InvariantCulture)}";
+                    }
+                    else
+                    {
+                        // handle exception
+                        if (completedTask.Exception is AggregateException x)
+                            x.InnerExceptions.ToList().ForEach(x =>
+                            {
+                                System.Diagnostics.Debug.WriteLine(x.Message);
+                            });
+                    }
                 }
                 // see https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/exception-handling-task-parallel-library
                 catch (AggregateException ex)
