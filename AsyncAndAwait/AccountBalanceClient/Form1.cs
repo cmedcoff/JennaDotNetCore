@@ -33,42 +33,45 @@ namespace AccountBalanceClient
             // GetAccountBalanceSynchronously();
             // GetAccountBalanceAsyncTaskParallelLibrary();
             // await GetAccountBalanceAsyncAwait();
-            await GetMultipleAccountBalancesAsyncAwait();
+            // await GetMultipleAccountBalancesAsyncAwait();
+            
+            GetAccountBalanceUsingAThread();
 
             /*
              *  don't forget to offer the option of going down down the async rabbit hole
              *  by discussing what the compiler actually generates, e.g. are threads used, etc.
-             *  
+             *
              *  Also remember when using TPS to do things in parallel, race conditions can occur
              *  and have to be dealt with the same way as when using threads directly
-             *  
-             *  The following blog post is a good resource for understanding async/await 
-             *  
+             *
+             *  The following blog post is a good resource for understanding async/await
+             *
              *  https://blog.stephencleary.com/2012/02/async-and-await.html
              *
              *  and has many links to other resources as well that "go down the rabbit hole" including the
              *  state machine that the compiler generates here:
-             *  
+             *
              *  https://learn.microsoft.com/en-us/archive/msdn-magazine/2011/october/asynchronous-programming-async-performance-understanding-the-costs-of-async-and-await
-             *  
+             *
              *  threading aspects are covered in the book "Async in C# 5.0" by Alex Davies
-             
+
              *  https://learning.oreilly.com/library/view/async-in-c/9781449337155/
-             *  
+             *
              *  Microsoft has other async patterns that existed before async/await:
-             *  
+             *
              *  See https://learn.microsoft.com/en-us/dotnet/standard/asynchronous-programming-patterns/
-             *  
+             *
              *  I owe you an update to this to demonstrate using threading
-             *  
+             *
              *  Pluralsight courses on async/await
-             *  
+             *
              *  https://app.pluralsight.com/library/courses/intro-async-parallel-dotnet4/table-of-contents
              *  https://app.pluralsight.com/library/courses/getting-started-with-asynchronous-programming-dotnet/table-of-contents
              *  https://app.pluralsight.com/library/courses/c-sharp-10-asynchronous-programming/table-of-contents
-             *  
+             *
              */
         }
+
 
         private void UpdateLabelWithCurrentTime()
         {
@@ -247,5 +250,48 @@ namespace AccountBalanceClient
                 }
             }
         }
-    }
+        private void GetAccountBalanceUsingAThread()
+        {
+            Thread thread = new Thread(() =>
+            {
+                var client = new RestClient(new RestClientOptions("https://localhost:7086"));
+
+                // synchronous API call using RestSharp library
+                // slow or unresponsive API calls will freeze the UI
+                // doesn't to be an API call, just the example here, could be any slow or unresponsive code
+                // calls the the database, some CPU or IO intensive code, etc.
+                ToggleAccountNumber();
+                var request = new RestRequest("balance")
+                    .AddParameter("accountNumber", accountNumber, ParameterType.QueryString);
+                RestResponse<AccountBalance> response = client.Execute<AccountBalance>(request);
+                
+                // we cannot update the UI from a non-UI thread, instead we must store the result
+                // and update the UI from the UI thread
+                // this requires that we use some form of a synchronization primitive
+                // the simple of which is a "Critical Section"
+                // use the one built into the language, the "lock" keyword
+                // or use the one built into the .NET framework, the "Monitor" class
+                lock (this)
+                {   
+                    this.BalanceFromThread = response.Data?.Balance;
+                }
+
+                // Monitor.Enter(this);
+                // this.BalanceFromThread = response.Data?.Balance;
+                // Monitor.Exit(this);
+                
+            });
+            thread.IsBackground = true; // mark as background thread so it doesn't prevent the app from exiting
+            thread.Start();
+            lock(this)
+            {
+                this.label1.Text = this.BalanceFromThread?.ToString(CultureInfo.InvariantCulture);
+            }
+            //Monitor.Enter(this);
+            //this.label1.Text = this.BalanceFromThread?.ToString(CultureInfo.InvariantCulture);
+            //Monitor.Exit(this);
+        }
+
+        public decimal? BalanceFromThread { get; set; }
+    }        
 }
