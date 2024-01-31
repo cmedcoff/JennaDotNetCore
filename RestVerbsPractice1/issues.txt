@@ -1,0 +1,34 @@
+* For testing, I tried inserting a TimeEntry but ran into a FK violation beasue
+  of the UserId, so I've commented out the UserId in the TimeEntry entity, and
+  the User entity as well.  May put them back in later, but for now, I just need
+  to make this simpler to test.
+
+* I ran into issues at runtime when I two ctor's for the context, I've commented
+  one to get around this, consider investigating later.  I need a default (no
+  argument) ctor for the EF migrations to work, but I may also need a ctor that
+  supports dependency and/or configuration injection. Compare to some other
+  project where I have that working.
+
+* There's that EF issue where I try to perform a find before an update, and
+  EF complains that the entity is already being tracked.  I've commented out
+  the find, and just do the update.  I think I can do this because I'm not
+  changing the PK, but I need to investigate this further.
+
+* Need to add validation!
+
+* Getting compiler warnings, because of the name of the latest migration?  Try
+  removing and re-adding it?
+
+* What about async?
+
+* There's still the whole issue of having a DTO that "mirrors" the entity, and
+  then having to map between the two.  Should consider cleaning this up as well.
+
+* it's interesting that the apicontroller template generates a controller with
+a PUT verb that accepts both and id and an object.  Why not just use the id
+of the object itself?  Consider going back to the Pluralsight video to see
+if he explains this.  Maybe even post a question on Pluralsight for that
+course or ask elsewhere?
+
+    This may have something to with the using the route as a REST URI.  It
+    uniquly identifies the resource.
