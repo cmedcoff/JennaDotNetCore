@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34322.80
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RestVerbsPractice1", "RestVerbsPractice1\RestVerbsPractice1.csproj", "{92EADBB5-67CD-4DBE-8288-139B80D69F2D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestVerbsPractice1HttpClient", "RestVerbsPractice1HttpClient\RestVerbsPractice1HttpClient.csproj", "{EE75FDCA-3DD8-4213-8368-5DC52841D01F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{92EADBB5-67CD-4DBE-8288-139B80D69F2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92EADBB5-67CD-4DBE-8288-139B80D69F2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92EADBB5-67CD-4DBE-8288-139B80D69F2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92EADBB5-67CD-4DBE-8288-139B80D69F2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE75FDCA-3DD8-4213-8368-5DC52841D01F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE75FDCA-3DD8-4213-8368-5DC52841D01F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE75FDCA-3DD8-4213-8368-5DC52841D01F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE75FDCA-3DD8-4213-8368-5DC52841D01F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {10F32473-4F5A-467E-842E-1828255255C7}
+	EndGlobalSection
+EndGlobal
