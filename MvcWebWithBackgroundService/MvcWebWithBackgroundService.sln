@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvcWebWithBackgroundService", "MvcWebWithBackgroundService\MvcWebWithBackgroundService.csproj", "{8B1E1B2A-A126-4968-82A2-63821D87B0F6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7F26B1BE-B985-4063-9912-D666B682B16C}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileProcessingService", "FileProcessingService\FileProcessingService.csproj", "{5E01C615-BA4B-4243-B708-9543A0E7FA7D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8B1E1B2A-A126-4968-82A2-63821D87B0F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B1E1B2A-A126-4968-82A2-63821D87B0F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B1E1B2A-A126-4968-82A2-63821D87B0F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B1E1B2A-A126-4968-82A2-63821D87B0F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E01C615-BA4B-4243-B708-9543A0E7FA7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E01C615-BA4B-4243-B708-9543A0E7FA7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E01C615-BA4B-4243-B708-9543A0E7FA7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E01C615-BA4B-4243-B708-9543A0E7FA7D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2A5FA00B-011F-46A8-8B11-814BB0BE480D}
+	EndGlobalSection
+EndGlobal
