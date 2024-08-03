@@ -5,9 +5,18 @@ namespace FileProcessingService
         public static void Main(string[] args)
         {
             var builder = Host.CreateApplicationBuilder(args);
-            builder.Services
-                .Configure<FileProcessConfig>(
-                builder.Configuration.GetSection("FileProcessConfig"));
+
+            var fileStorageConfigSection = builder.Configuration.GetSection("FileStorageConfig");
+            builder.Services.Configure<FileStorageConfig>(fileStorageConfigSection);
+            if( fileStorageConfigSection.GetValue<bool>("UseBlobStorage") )
+            {
+                builder.Services.AddSingleton<IFileStorage, BlobStorage>();
+            }
+            else
+            {
+                builder.Services.AddSingleton<IFileStorage, LocalFileStorage>();
+            }
+
             builder.Services.AddHostedService<FileProcessor>();
 
             var host = builder.Build();
