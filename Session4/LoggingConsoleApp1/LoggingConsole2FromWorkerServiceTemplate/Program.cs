@@ -2,6 +2,7 @@ using LoggingConsole2FromWorkerServiceTemplate;
 
 IHost host = Host.CreateDefaultBuilder(args)
     //.ConfigureServices(services => { services.AddHostedService<Worker>(); })
+    .Logging
     .ConfigureLogging((HostBuilderContext hostBuilderContext, ILoggingBuilder loggingBuilder) =>
     {
         loggingBuilder.ClearProviders();
@@ -62,6 +63,8 @@ IHost host = Host.CreateDefaultBuilder(args)
 
     })
     .Build();
+
+host.Logging.LogInformation("Some logging");
 
 //await host.RunAsync();
 

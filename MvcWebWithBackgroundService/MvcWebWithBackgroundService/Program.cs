@@ -12,20 +12,8 @@ public class Program
         
         // add/remove this line to use "in process" FileProcessor/BackgroundService
         //builder.Services.AddHostedService<FileProcesser>();
+        builder.Services.AddFileStorageService(builder.Configuration);
 
-        var config = builder.Configuration.GetSection("FileStorageConfig");
-        builder.Services.Configure<FileStorageConfig>(config);
-        var useBlobStorage = config.GetValue<bool>("UseBlobStorage");
-        if (useBlobStorage)
-        {
-            builder.Services.AddSingleton<IFileStorageService, BlobStorage>();
-        }
-        else
-        {
-            builder.Services.AddSingleton<IFileStorageService, LocalFileSystem>();
-        }
-        
-        
 
         var app = builder.Build();
 

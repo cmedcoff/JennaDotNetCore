@@ -17,6 +17,12 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        
+        //builder.Services.AddSwaggerGen( x =>
+        //{
+        //    x.IncludeXmlComments("apidocs.xml");
+        //}
+        //);
 
         builder.Services.AddDbContext<SqliteContext>();
         builder.Services.AddScoped<ITimeEntryRepository, TimeEntryRepository>();

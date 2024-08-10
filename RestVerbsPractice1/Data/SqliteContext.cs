@@ -13,11 +13,17 @@ namespace RestVerbsPractice1.Data;
 //     public string? Name { get; set; }
 //     public List<TimeEntry> TimeEntries { get; set; } = new List<TimeEntry>();
 // }
-
+/// <summary>
+/// These are my comments.
+/// </summary>
 public class TimeEntry
 {
     public int Id { get; set; }
     // public int UserId { get; set; }
+
+    /// <summary>
+    /// Description of how time was spent
+    /// </summary>  
     [Required]
     public string? Description { get; set; }
     [Required]

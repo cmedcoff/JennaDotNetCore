@@ -1,5 +1,5 @@
 using System.Globalization;
-
+using System.Xml.Serialization;
 using RestSharp;
 
 using Shared;
@@ -31,7 +31,7 @@ namespace AccountBalanceClient
         {
             // UpdateLabelWithCurrentTime();
             // GetAccountBalanceSynchronously();
-            // GetAccountBalanceAsyncTaskParallelLibrary();
+             GetAccountBalanceAsyncTaskParallelLibrary();
             // await GetAccountBalanceAsyncAwait();
             // await GetMultipleAccountBalancesAsyncAwait();
             
@@ -250,6 +250,11 @@ namespace AccountBalanceClient
                 }
             }
         }
+
+        private void somemethod()
+        { 
+        }
+
         private void GetAccountBalanceUsingAThread()
         {
             Thread thread = new Thread(() =>
@@ -264,7 +269,7 @@ namespace AccountBalanceClient
                 var request = new RestRequest("balance")
                     .AddParameter("accountNumber", accountNumber, ParameterType.QueryString);
                 RestResponse<AccountBalance> response = client.Execute<AccountBalance>(request);
-                
+
                 // we cannot update the UI from a non-UI thread, instead we must store the result
                 // and update the UI from the UI thread
                 // this requires that we use some form of a synchronization primitive
@@ -272,14 +277,14 @@ namespace AccountBalanceClient
                 // use the one built into the language, the "lock" keyword
                 // or use the one built into the .NET framework, the "Monitor" class
                 lock (this)
-                {   
+                {
                     this.BalanceFromThread = response.Data?.Balance;
                 }
 
-                // Monitor.Enter(this);
-                // this.BalanceFromThread = response.Data?.Balance;
-                // Monitor.Exit(this);
-                
+                //Monitor.Enter(this);
+                //this.BalanceFromThread = response.Data?.Balance;
+                //Monitor.Exit(this);
+
             });
             thread.IsBackground = true; // mark as background thread so it doesn't prevent the app from exiting
             thread.Start();

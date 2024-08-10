@@ -1,110 +1,147 @@
-using System.IO;
-using System.Threading.Tasks;
-
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Azure.Storage.Blobs;
 
-namespace MvcWebWithBackgroundService.Controllers
+namespace MvcWebWithBackgroundService.Controllers;
+
+public interface IFileStorageService
 {
-    public interface IFileStorageService
+    Task UploadFileAsync(IFormFile file);
+}
+
+public class FileStorageConfig
+{
+    public string? LocalFilePath { get; set; }
+    public bool UseBlobStorage { get; set; }
+    public string? BlobStorageConnectionString { get; set; }
+    public string? BlobStorageContainerName { get; set; }
+}
+
+internal class FileStorageConfigValidator : IValidateOptions<FileStorageConfig>
+{
+    public ValidateOptionsResult Validate(string? name, FileStorageConfig options)
     {
-        Task UploadFileAsync(IFormFile file);
+        return string.IsNullOrEmpty(options.LocalFilePath) && !options.UseBlobStorage ? 
+            ValidateOptionsResult.Fail("LocalFilePath is required when UseBlobStorage is false") : 
+            ValidateOptionsResult.Success;
+    }
+}
+
+
+public class LocalFileSystem : IFileStorageService
+{
+    private readonly FileStorageConfig _config;
+
+    public LocalFileSystem(IOptions<FileStorageConfig> config)
+    {
+        _config = config.Value;
     }
 
-    public class FileStorageConfig
+    private void CreateDirectoryIfNotExists(string path)
     {
-        public string? LocalFilePath { get; set; }
-        public bool UseBlobStorage { get; set; }
-        public string? BlobStorageConnectionString { get; set; }
-        public string? BlobStorageContainerName { get; set; }
-    }
-
-    public class LocalFileSystem : IFileStorageService
-    {
-        private readonly IOptions<FileStorageConfig> _config;
-
-        public LocalFileSystem(IOptions<FileStorageConfig> config)
+        // might need some error handling
+        if (!Directory.Exists(path))
         {
-            _config = config;
-        }
-
-        private void CreateDirectoryIfNotExists(string path)
-        {
-            // might need some error handling
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-        }
-
-        public async Task UploadFileAsync(IFormFile file)
-        {
-            CreateDirectoryIfNotExists(_config.Value.LocalFilePath);
-
-            // might need some error handling
-            var path = Path.Combine(_config.Value.LocalFilePath, file.FileName);
-            using (var stream = new FileStream(path, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
+            Directory.CreateDirectory(path);
         }
     }
 
-    public class BlobStorage : IFileStorageService
+    public async Task UploadFileAsync(IFormFile file)
     {
-        private readonly IOptions<FileStorageConfig> _config;
-
-        public BlobStorage(IOptions<FileStorageConfig> config)
+        if (string.IsNullOrEmpty(_config.LocalFilePath))
         {
-            _config = config;
+            // I'd probably use a custom exception type here
+            throw new InvalidOperationException("LocalFilePath is not configured");
         }
-
-        public async Task UploadFileAsync(IFormFile file)
+        else
         {
-            var blobServiceClient = new BlobServiceClient(_config.Value.BlobStorageConnectionString);
-            var blobContainerClient = blobServiceClient.GetBlobContainerClient(_config.Value.BlobStorageContainerName);
-            await blobContainerClient.UploadBlobAsync(file.FileName, file.OpenReadStream());
+            CreateDirectoryIfNotExists(_config.LocalFilePath);
+        }
+        
+
+        // might need some error handling
+        var path = Path.Combine(_config.LocalFilePath, file.FileName);
+        using (var stream = new FileStream(path, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
         }
     }
+}
 
-    public class FileUploadController : Controller
+public class BlobStorage : IFileStorageService
+{
+    private readonly FileStorageConfig _config;
+
+    public BlobStorage(IOptions<FileStorageConfig> config)
     {
-        private readonly IFileStorageService _fileStorageService;
+        _config = config.Value;
+    }
 
-        public FileUploadController(IFileStorageService fileStorageService)
+    public async Task UploadFileAsync(IFormFile file)
+    {
+        var blobContainerClient = new BlobContainerClient(_config.BlobStorageConnectionString, _config.BlobStorageContainerName);
+        await blobContainerClient.UploadBlobAsync(file.FileName, file.OpenReadStream());
+    }
+}
+
+public class FileUploadController : Controller
+{
+    private readonly IFileStorageService _fileStorageService;
+
+    public FileUploadController(IFileStorageService fileStorageService)
+    {
+        _fileStorageService = fileStorageService;
+    }
+
+    [HttpGet]
+    public IActionResult Index()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Upload(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
         {
-            _fileStorageService = fileStorageService;
-        }
-
-        [HttpGet]
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Upload(IFormFile file)
-        {
-            if (file == null || file.Length == 0)
-            {
-                ViewBag.Message = "File not selected";
-                return View("Index");
-            }
-
-            await _fileStorageService.UploadFileAsync(file);
-
-            //await ProcessFile(path);
-
-            ViewBag.Message = "File uploaded successfully";
+            ViewBag.Message = "File not selected";
             return View("Index");
         }
 
-        // private async Task ProcessFile(string path)
-        // {
-        //     // simulate some slow long code to process the contents of the file
-        //     await Task.Delay(20000);
-        // }
+        await _fileStorageService.UploadFileAsync(file);
+
+        //await ProcessFile(path);
+
+        ViewBag.Message = "File uploaded successfully";
+        return View("Index");
+    }
+
+    // private async Task ProcessFile(string path)
+    // {
+    //     // simulate some slow long code to process the contents of the file
+    //     await Task.Delay(20000);
+    // }
+}
+
+
+
+public static class FileStorageServiceExtensions
+{
+    public static IServiceCollection AddFileStorageService(this IServiceCollection services, IConfiguration configuration)
+    {
+        var fileStoreageConfig = configuration.GetSection(nameof(FileStorageConfig));
+        services.Configure<FileStorageConfig>(fileStoreageConfig);
+
+        // register the service based on the configuration
+        services.AddSingleton(typeof(IFileStorageService), fileStoreageConfig.GetValue<bool>("UseBlobStorage") ? 
+            typeof(BlobStorage) : typeof(LocalFileSystem));
+
+        // add configuration validation
+        services.AddSingleton<IValidateOptions<FileStorageConfig>>(new FileStorageConfigValidator());
+        services.AddOptionsWithValidateOnStart<FileStorageConfig>();
+
+        return services;
     }
 }
+
+

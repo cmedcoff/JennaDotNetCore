@@ -23,7 +23,15 @@ namespace RestVerbsPractice1
         }
 
         // GET: api/<TimeEntriesController>
+        /// <summary>
+        /// Returns a collection of all time entries
+        /// </summary>  
+        /// <returns>TimeEntry collection</returns>
+        /// <response code="200">Returns a collection of time entries</response>
+        /// <response code="500">If there's a database failure</response>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<IEnumerable<TimeEntry>> Get()
         {
             try
@@ -37,7 +45,13 @@ namespace RestVerbsPractice1
             }
         }
 
-        // GET api/<TimeEntriesController>/5
+        /// <summary>
+        /// Get a city by id
+        /// </summary>
+        /// <param name="id">The id of the city to get</param>
+        /// <param name="includePointsOfInterest">Whether or not to include the points of interest</param>
+        /// <returns>An IActionResult</returns>
+        /// <response code="200">Returns the requested city</response>
         [HttpGet("{id}")]
         public ActionResult<TimeEntry?> Get(int id)
         {

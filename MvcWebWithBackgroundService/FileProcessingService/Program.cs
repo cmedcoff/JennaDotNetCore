@@ -1,26 +1,22 @@
-namespace FileProcessingService
+
+namespace FileProcessingService;
+
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
+        try
         {
-            var builder = Host.CreateApplicationBuilder(args);
-
-            var fileStorageConfigSection = builder.Configuration.GetSection("FileStorageConfig");
-            builder.Services.Configure<FileStorageConfig>(fileStorageConfigSection);
-            if( fileStorageConfigSection.GetValue<bool>("UseBlobStorage") )
-            {
-                builder.Services.AddSingleton<IFileStorage, BlobStorage>();
-            }
-            else
-            {
-                builder.Services.AddSingleton<IFileStorage, LocalFileStorage>();
-            }
-
-            builder.Services.AddHostedService<FileProcessor>();
-
+            HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
+            builder.Services.AddFileProcessorService(builder.Configuration);
             var host = builder.Build();
             host.Run();
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
     }
 }
+
+

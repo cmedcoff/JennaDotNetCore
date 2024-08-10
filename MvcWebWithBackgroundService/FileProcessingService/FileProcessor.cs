@@ -1,5 +1,8 @@
-using Microsoft.Extensions.Options;
+using System.Diagnostics;
+using Microsoft.Extensions.Configuration.Binder;
+
 using Azure.Storage.Blobs;
+using Microsoft.Extensions.Options;
 
 namespace FileProcessingService;
 
@@ -16,11 +19,56 @@ public interface IFileStorage
 // as per interface segregation principle
 public class FileStorageConfig
 {
+    public string? LocalFilePath { get; set; }
     public bool UseBlobStorage { get; set; }
-    public string? UploadPath { get; set; }
     public string? BlobStorageConnectionString { get; set; }
     public string? BlobStorageContainerName { get; set; }
 }
+
+public class FileStorageConfigValidator : IValidateOptions<FileStorageConfig>
+{
+    public ValidateOptionsResult Validate(string? name, FileStorageConfig options)
+    {
+        try
+        {
+            if (options.UseBlobStorage)
+            {
+                if (string.IsNullOrWhiteSpace(options.BlobStorageConnectionString))
+                {
+                    return ValidateOptionsResult.Fail("BlobStorageConnectionString is required when UseBlobStorage is true");
+                }
+                else
+                {
+                    Console.WriteLine($"BlobStorageConnectionString: {options.BlobStorageConnectionString}");
+                }
+
+                if (string.IsNullOrWhiteSpace(options.BlobStorageContainerName))
+                {
+                    return ValidateOptionsResult.Fail("BlobStorageContainerName is required when UseBlobStorage is true");
+                }
+
+                var storageAccountClient = new BlobServiceClient(options.BlobStorageConnectionString);
+                return storageAccountClient.GetBlobContainerClient(options.BlobStorageContainerName).Exists()
+                    ? ValidateOptionsResult.Success
+                    : ValidateOptionsResult.Fail($"BlobStorageContainerName '{options.BlobStorageContainerName}' does not exist");
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(options.LocalFilePath))
+                {
+                    return ValidateOptionsResult.Fail("LocalFilePath is required when UseBlobStorage is false");
+                }
+            }
+        }
+        catch(Exception ex)
+        {
+            return ValidateOptionsResult.Fail($"BlobStorageConnectionString is invalid: {ex.Message}");
+        }
+    
+        return ValidateOptionsResult.Success;
+    }
+}
+
 
 // in the long run this should be in a separate file, perhaps even a separate project
 // per RCM Principles but for simplicity I'm keeping it here for now
@@ -35,21 +83,21 @@ public class LocalFileStorage : IFileStorage
 
     public IEnumerable<string> GetFiles()
     {
-        if (_config.UploadPath != null)
+        if (_config.LocalFilePath != null)
         {
-            return Directory.GetFiles(_config.UploadPath);
+            return Directory.GetFiles(_config.LocalFilePath);
         }
         else
         {
             // this really should be some custom exception type
-            throw new Exception("UploadPath is not set in appsettings.json");
+            throw new Exception("LocalFilePath is not set in appsettings.json");
         }
     }
 }
 
 // in the long run this should be in a separate file, perhaps even a separate project
 // per RCM Principles but for simplicity I'm keeping it here for now
-ppublic class BlobStorage : IFileStorage
+public class BlobStorage : IFileStorage
 {
     private readonly FileStorageConfig _config;
 
@@ -69,7 +117,7 @@ ppublic class BlobStorage : IFileStorage
 public class FileProcessor : BackgroundService
 {
     private readonly ILogger<FileProcessor> _logger;
-    
+
     // by using the interface we can switch between local file storage and blob storage
     // without changing the client, e.g. Open-Closed Principle, and we've also decoupled
     // the client from the implementation, including any particular cloud storage provider
@@ -105,3 +153,42 @@ public class FileProcessor : BackgroundService
         }
     }
 }
+
+public static class FileProcessorServicesExt
+{
+    public static IServiceCollection AddFileProcessorService(this IServiceCollection services, IConfiguration configuration)
+    {
+        // add service
+        services.AddHostedService<FileProcessor>();
+
+        // now for dependent config and services
+        var fileStorageConfigSection = configuration.GetSection(nameof(FileStorageConfig));
+
+        // fetch config section and if to use blob storage and add the configured service0
+        services.Configure<FileStorageConfig>(fileStorageConfigSection);
+        services.AddSingleton(typeof(IFileStorage),
+            fileStorageConfigSection.GetValue<bool>("UseBlobStorage") ? typeof(BlobStorage) : typeof(LocalFileStorage));
+
+
+        services.AddOptions<FileStorageConfig>()
+            .Bind(fileStorageConfigSection)
+            //.ValidateDataAnnotations() // if using DataAnnotations for validation
+            .ValidateOnStart();
+
+        // alternative to DataAnnotaitons, Register a custom validator
+        services.AddSingleton<IValidateOptions<FileStorageConfig>, FileStorageConfigValidator>();
+
+        // a: IHostEnvironment.EnvironmentName == "Development"
+        if (configuration.GetValue<string>("Environment") == "Development")
+        {
+            // write GetDebugView to a file
+            using (var writer = new StreamWriter("config_debug.txt"))
+            {
+                writer.WriteLine(((IConfigurationRoot)configuration).GetDebugView());
+            }
+        }
+
+        return services;
+    }
+}
+
