@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RestVerbsPractice1</name>
+    </assembly>
+    <members>
+        <member name="M:RestVerbsPractice1.TimeEntriesController.Get">
+            <summary>
+            Returns a collection of all time entries
+            </summary>  
+            <returns>TimeEntry collection</returns>
+            <response code="200">Returns a collection of time entries</response>
+            <response code="500">If there's a database failure</response>
+        </member>
+        <member name="M:RestVerbsPractice1.TimeEntriesController.Get(System.Int32)">
+            <summary>
+            Get a city by id
+            </summary>
+            <param name="id">The id of the city to get</param>
+            <param name="includePointsOfInterest">Whether or not to include the points of interest</param>
+            <returns>An IActionResult</returns>
+            <response code="200">Returns the requested city</response>
+        </member>
+        <member name="T:RestVerbsPractice1.Data.TimeEntry">
+            <summary>
+            These are my comments.
+            </summary>
+        </member>
+        <member name="P:RestVerbsPractice1.Data.TimeEntry.Description">
+            <summary>
+            Description of how time was spent
+            </summary>  
+        </member>
+        <member name="T:RestVerbsPractice1.Migrations.Initial">
+            <inheritdoc />
+        </member>
+        <member name="M:RestVerbsPractice1.Migrations.Initial.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:RestVerbsPractice1.Migrations.Initial.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:RestVerbsPractice1.Migrations.Initial.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:RestVerbsPractice1.Migrations.RemoveUser">
+            <inheritdoc />
+        </member>
+        <member name="M:RestVerbsPractice1.Migrations.RemoveUser.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:RestVerbsPractice1.Migrations.RemoveUser.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:RestVerbsPractice1.Migrations.RemoveUser.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>
