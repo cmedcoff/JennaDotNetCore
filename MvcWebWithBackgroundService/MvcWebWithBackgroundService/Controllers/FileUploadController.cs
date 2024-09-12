@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Azure.Storage.Blobs;
@@ -6,14 +7,21 @@ namespace MvcWebWithBackgroundService.Controllers;
 
 public interface IFileStorageService
 {
-    Task UploadFileAsync(IFormFile file);
+    Task UploadFileAsync(string fileName, Stream stream);
 }
 
 public class FileStorageConfig
 {
+    [Required]
     public string? LocalFilePath { get; set; }
+
+    [Required]
     public bool UseBlobStorage { get; set; }
+
+    [Required]
     public string? BlobStorageConnectionString { get; set; }
+
+    [Required]
     public string? BlobStorageContainerName { get; set; }
 }
 
@@ -33,8 +41,11 @@ public class LocalFileSystem : IFileStorageService
     private readonly FileStorageConfig _config;
 
     public LocalFileSystem(IOptions<FileStorageConfig> config)
+    //public LocalFileSystem(IOptionsMonitor<FileStorageConfig> config)
     {
         _config = config.Value;
+        //_config = config.CurrentValue;
+        //config.OnChange(cfg => _config = cfg);
     }
 
     private void CreateDirectoryIfNotExists(string path)
@@ -46,7 +57,7 @@ public class LocalFileSystem : IFileStorageService
         }
     }
 
-    public async Task UploadFileAsync(IFormFile file)
+    public async Task UploadFileAsync(string fileName, Stream stream)
     {
         if (string.IsNullOrEmpty(_config.LocalFilePath))
         {
@@ -57,14 +68,10 @@ public class LocalFileSystem : IFileStorageService
         {
             CreateDirectoryIfNotExists(_config.LocalFilePath);
         }
-        
 
         // might need some error handling
-        var path = Path.Combine(_config.LocalFilePath, file.FileName);
-        using (var stream = new FileStream(path, FileMode.Create))
-        {
-            await file.CopyToAsync(stream);
-        }
+        var path = Path.Combine(_config.LocalFilePath, fileName);  
+        await stream.CopyToAsync(stream);
     }
 }
 
@@ -77,10 +84,10 @@ public class BlobStorage : IFileStorageService
         _config = config.Value;
     }
 
-    public async Task UploadFileAsync(IFormFile file)
+    public async Task UploadFileAsync(string fileName, Stream stream)
     {
         var blobContainerClient = new BlobContainerClient(_config.BlobStorageConnectionString, _config.BlobStorageContainerName);
-        await blobContainerClient.UploadBlobAsync(file.FileName, file.OpenReadStream());
+        await blobContainerClient.UploadBlobAsync(fileName, stream);
     }
 }
 
@@ -108,7 +115,7 @@ public class FileUploadController : Controller
             return View("Index");
         }
 
-        await _fileStorageService.UploadFileAsync(file);
+        await _fileStorageService.UploadFileAsync(file.Name, file.OpenReadStream());
 
         //await ProcessFile(path);
 
@@ -138,6 +145,9 @@ public static class FileStorageServiceExtensions
 
         // add configuration validation
         services.AddSingleton<IValidateOptions<FileStorageConfig>>(new FileStorageConfigValidator());
+        //services.AddOptions<FileStorageConfig>()
+        //    .Bind(configuration.GetSection(nameof(FileStorageConfig)))
+        //    .ValidateDataAnnotations();
         services.AddOptionsWithValidateOnStart<FileStorageConfig>();
 
         return services;
